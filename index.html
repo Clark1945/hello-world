@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Clark's Main Page</title>
+  </head>
+  <body>
+    <h1>Java Reflection</h1>
+    <br>
+    <p>
+      嗨，我是剛出社會不久的程式小白Clark，最近在開發上面偶然接觸到了Java Reflection的相關知識，
+      為了不讓自己健忘，所以我建立了一個Github Page，來存放我至今以後的技術教學文章。
+      那麼，正題開始。
+    </p>
+      <h4>這篇文章適合讀者如下</h4>
+      <ul>
+        <li>曾經、或是正在學習程式的人</li>
+        <li>曾經、或是有使用過Java開發的人</li>
+        <li>勤學的人</li>
+      </ul>
+      <h3>在介紹Reflection之前...</h3>
+    <p>
+      先來回顧一下<u>Java</u>是怎麼運作的吧。一般來說<u>Java</u>編譯程式碼時會經歷三個階段。
+      <ol>
+      <li>開發的程式碼在<strong>.java</strong>檔，使用<strong>javac compiler</strong> 將<strong>.java</strong>編譯為<strong>.class</strong>檔案。</li>
+      <li><strong>.class</strong> 也稱 <strong>Java bytecode</strong>，程式碼要轉換成<strong>bytecode</strong>才能提供給<strong>Java Virtual Machine(JVM)</strong> 讀取成機器語言。</li>
+      <li>完成。</li>
+      </ol>
+      可參考以下圖片，可以更了解Java編譯的過程運作。
+      <img src="/img/Java%20Compile%20Process.png" alt="Java編譯過程">
+      </p>
+      <h3>那麼...Reflection是什麼？</h3>
+      <p>
+        反射是一種JAVA 提供的機制，允許執行時期動態載入類別、檢視類別資訊、生成物件或操作生成的物件。<br>
+        甚麼叫執行時間動態載入類別呢？執行時間就是指程式在執行的時間，通常來說，程式的開發都是在執行時間以前就確定開發所需要引用的類別<br>
+        但反射的概念卻恰好相反，他是在程式執行中，才去訪問需要被使用的類別，在複雜的專案中，這樣的作法可能會導致某種不可預料的錯誤。<br>
+        Java Reflection API提供的功能如下：
+        <ul>
+          <li>forName() 獲取Class對象</li>
+          <li>newInstance()返回一個生成實例</li>
+          <li>getDeclaredFields()取得所有屬性Field </li>
+          <li>getDeclaredField(String name)取得指定的屬性名稱</li>
+          <li>getCanonicalName()類getPackage().getName()package名稱</li>
+          <li>getModifiers()modifier名稱</li>
+          <li>getConstructors()取得該類別的建構子陣列</li>
+        </ul>
+      </p>
+  <h3>那麼，實際上是怎麼使用呢，以下有個簡單的範例</h3>
+  <p>
+    假設我有一個類別如下：<br>
+    <img src="img/reflection_class.png" alt="類別範例"><br>
+    當中有三個private的屬性與一個private的方法與public的方法。接著，我撰寫了以下程式：<br>
+    <code>
+      Class smithClass = Class.forName("org.example.Smith");<br>
+        Smith smith = (Smith) smithClass.newInstance(); //取得類別<br>
+        smith.talk("Geralt");<br>
+
+        Field[] fields = smithClass.getDeclaredFields();<br>
+        for (int i = 0; i < fields.length; i++) {<br>
+            System.out.println("field" + i + " : " + fields[i].getName()); // 印出類別下的所有屬性<br>
+        }<br>
+
+        Method[] methods = smithClass.getDeclaredMethods();<br>
+        for (int i = 0; i < methods.length; i++) { // 印出類別下的所有方法<br>
+            System.out.println("method" + i + " : " + methods[i].getName());<br>
+            System.out.println("應傳入參數型別為 = " + Arrays.toString(methods[i].getGenericParameterTypes()));<br>
+        }<br>
+    </code>
+    接著，印出的結果如下：
+    <img src="img/reflection_print.png" alt="印出範例"><br>
+    這段程式是這樣的。我首先使用getName()方法取得名為Smith的類別，印出Smith預設的talk()方法確保功能正常運作，再來，我透過Reflection的API取得該類別下的所有變數與所有的方法，<br>
+    令人訝異的是，就連private方法也被一併印出，這代表了Reflection功能真的十分強大。
+
+    <h3>結論</h3>
+    不可否認的是，Reflection的功能強大，只需要透過變數名稱就可以存取物件與方法，但同時他也帶來了一些問題，比方說程式的安全性，後續的可維護性等等，以下是優缺點<br>
+    <h4>優點：</h4>
+    <ul>
+      <li>靈活度高，降低耦合性</li>
+      <li>特殊場合中，可以減少開發時間</li>
+    </ul>
+    <h4>缺點：</h4>
+    <ul>
+      <li>在執行階段中抓取類別，增加資安風險</li>
+      <li>非直接存取效能會比較低</li>
+      <li>程式碼可讀性較差</li>
+      <li>不好維護</li>
+    </ul>
+    綜合以上優缺點，雖然萬用歸萬用，但實際開發使用上還是需要多多評估，才不會反而對後續維護造成負擔。
+  </p>
+  </body>
+</html>
